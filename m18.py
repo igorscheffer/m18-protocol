@@ -6,6 +6,7 @@ import argparse
 import datetime
 import math
 import re
+import json
 
 import requests
 
@@ -59,190 +60,190 @@ data_matrix = [
 #   dec_t - decimal temperature (byte_1 + byte_2/255)
 #   cell_v - cell voltages (1: 3568, 2: 3567, 3:3570, etc)
 data_id = [
-    [0x0000, 2,  "uint",  "Cell type"],                       # 0
-    [0x0002, 2,  "uint",  "Unknown (always 0)"], 
-    [0x0004, 5,  "sn",    "Capacity & Serial number (?)"], 
-    [0x000D, 4,  "uint",  "Unknown (4th code?)"], 
-    [0x0011, 4,  "date",  "Manufacture date"], 
-    [0x0015, 4,  "date",  "Date of first charge (Forge)"], 
-    [0x0019, 4,  "date",  "Date of last charge (Forge)"], 
-    [0x0023, 20, "ascii", "Note (ascii string)"], 
-    [0x0037, 4,  "date",  "Current date"], 
-    [0x0069, 2,  "uint",  "Unknown (always 2)"]	, 
-    [0x007B, 1,  "uint",  "Unknown (always 0)"],              # 10
-    [0x4000, 4,  "uint",  "Unknown (Forge)"], 
-    [0x400A, 10, "cell_v","Cell voltages (mV)"], 
-    [0x4014, 2,  "adc_t", "Temperature (C) (non-Forge)"], 
-    [0x4016, 2,  "uint",  "Unknown (Forge)"], 
-    [0x4019, 2,  "uint",  "Unknown (Forge)"], 
-    [0x401B, 2,  "uint",  "Unknown (Forge)"], 
-    [0x401D, 2,  "uint",  "Unknown (Forge)"], 
-    [0x401F, 2,  "dec_t", "Temperature (C) (Forge)"], 
-    [0x6000, 2,  "uint",  "Unknown (Forge)"], 
-    [0x6002, 2,  "uint",  "Unknown (Forge)"],                 # 20
-    [0x6004, 4,  "uint",  "Unknown (Forge)"], 
-    [0x6008, 4,  "uint",  "Unknown (Forge)"], 
-    [0x600C, 2,  "uint",  "Unknown (Forge)"], 
-    [0x9000, 4,  "date",  "Date of first charge (rounded)"], 
-    [0x9004, 4,  "date",  "Date of last tool use (rounded)"], 
-    [0x9008, 4,  "date",  "Date of last charge (rounded)"], 
-    [0x900C, 4,  "date",  "Unknown date (often zero)"], 
-    [0x9010, 2,  "uint",  "Days since first charge"], 
-    [0x9012, 4,  "uint",  "Total discharge (amp-sec)"], 
-    [0x9016, 4,  "uint",  "Total discharge (watt-sec or joules)"],    #30 
-    [0x901A, 4,  "uint",  "Total charge count"], 
-    [0x901E, 2,  "uint",  "Dumb charge count (J2>7.1V for >=0.48s)"], 
-    [0x9020, 2,  "uint",  "Redlink (UART) charge count"], 
-    [0x9022, 2,  "uint",  "Completed charge count (?)"], 
-    [0x9024, 4,  "hhmmss","Total charging time (HH:MM:SS)"], 
-    [0x9028, 4,  "hhmmss","Time on charger whilst full (HH:MM:SS)"], 
-    [0x902C, 2,  "uint",  "Unknown (almost always 0)"], 
-    [0x902E, 2,  "uint",  "Charge started with a cell < 2.5V"], 
-    [0x9030, 2,  "uint",  "Discharge to empty"], 
-    [0x9032, 2,  "uint",  "Num. overheat on tool (must be > 10A)"],   #40
-    [0x9034, 2,  "uint",  "Overcurrent?"], 
-    [0x9036, 2,  "uint",  "Low voltage events)"], 
-    [0x9038, 2,  "uint",  "Low-voltage bounce? (4 flashing LEDs)"], 
-    [0x903A, 2,  "uint",  "Discharge @ 10-20A (seconds)"], 
-    [0x903C, 2,  "uint",  "          @ 20-30A (could be watts)"], 
-    [0x903E, 2,  "uint",  "          @ 30-40A      "], 
-    [0x9040, 2,  "uint",  "          @ 40-50A      "], 
-    [0x9042, 2,  "uint",  "          @ 50-60A      "], 
-    [0x9044, 2,  "uint",  "          @ 60-70A      "], 
-    [0x9046, 2,  "uint",  "          @ 70-80A      "],    #50
-    [0x9048, 2,  "uint",  "          @ 80-90A      "], 
-    [0x904A, 2,  "uint",  "          @ 90-100A     "], 
-    [0x904C, 2,  "uint",  "          @ 100-110A    "], 
-    [0x904E, 2,  "uint",  "          @ 110-120A    "], 
-    [0x9050, 2,  "uint",  "          @ 120-130A    "], 
-    [0x9052, 2,  "uint",  "          @ 130-140A    "], 
-    [0x9054, 2,  "uint",  "          @ 140-150A    "], 
-    [0x9056, 2,  "uint",  "          @ 150-160A    "], 
-    [0x9058, 2,  "uint",  "          @ 160-170A    "], 
-    [0x905A, 2,  "uint",  "          @ 170-180A    "],    #60
-    [0x905C, 2,  "uint",  "          @ 180-190A    "], 
-    [0x905E, 2,  "uint",  "          @ 190-200A    "], 
-    [0x9060, 2,  "uint",  "          @ 200-210A    "], 
-    [0x9062, 2,  "uint",  "Unknown (larger in lower Ah packs)"], 
-    [0x9064, 2,  "uint",  "Discharge @ 10-15A (seconds)"], 
-    [0x9066, 2,  "uint",  "          @ 15-20A (could be watts)"], 
-    [0x9068, 2,  "uint",  "          @ 20-25A      "], 
-    [0x906A, 2,  "uint",  "          @ 25-30A      "], 
-    [0x906C, 2,  "uint",  "          @ 30-35A      "], 
-    [0x906E, 2,  "uint",  "          @ 35-40A      "],    #70
-    [0x9070, 2,  "uint",  "          @ 40-45A      "], 
-    [0x9072, 2,  "uint",  "          @ 45-50A      "], 
-    [0x9074, 2,  "uint",  "          @ 50-55A      "], 
-    [0x9076, 2,  "uint",  "          @ 55-60A      "], 
-    [0x9078, 2,  "uint",  "          @ 60-65A      "], 
-    [0x907A, 2,  "uint",  "          @ 65-70A      "], 
-    [0x907C, 2,  "uint",  "          @ 70-65A      "], 
-    [0x907E, 2,  "uint",  "          @ 75-80A      "], 
-    [0x9080, 2,  "uint",  "          @ 80-85A      "], 
-    [0x9082, 2,  "uint",  "          @ 85-90A      "],    #80
-    [0x9084, 2,  "uint",  "          @ 90-95A      "], 
-    [0x9086, 2,  "uint",  "          @ 95-100A     "], 
-    [0x9088, 2,  "uint",  "          @ 100-105A    "], 
-    [0x908A, 2,  "uint",  "          @ 105-110A    "], 
-    [0x908C, 2,  "uint",  "          @ 110-115A    "], 
-    [0x908E, 2,  "uint",  "          @ 115-120A    "], 
-    [0x9090, 2,  "uint",  "          @ 120-125A    "], 
-    [0x9092, 2,  "uint",  "          @ 125-130A    "], 
-    [0x9094, 2,  "uint",  "          @ 130-135A    "], 
-    [0x9096, 2,  "uint",  "          @ 135-140A    "],    #90
-    [0x9098, 2,  "uint",  "          @ 140-145A    "], 
-    [0x909A, 2,  "uint",  "          @ 145-150A    "], 
-    [0x909C, 2,  "uint",  "          @ 150-155A    "], 
-    [0x909E, 2,  "uint",  "          @ 155-160A    "], 
-    [0x90A0, 2,  "uint",  "          @ 160-165A    "], 
-    [0x90A2, 2,  "uint",  "          @ 165-170A    "], 
-    [0x90A4, 2,  "uint",  "          @ 170-175A    "], 
-    [0x90A6, 2,  "uint",  "          @ 175-180A    "], 
-    [0x90A8, 2,  "uint",  "          @ 180-185A    "], 
-    [0x90AA, 2,  "uint",  "          @ 185-190A    "],    #100
-    [0x90AC, 2,  "uint",  "          @ 190-195A    "], 
-    [0x90AE, 2,  "uint",  "          @ 195-200A    "], 
-    [0x90B0, 2,  "uint",  "          @ 200A+       "], 
-    [0x90B2, 2,  "uint",  "Charge started < 17V"], 
-    [0x90B4, 2,  "uint",  "Charge started 17-18V"], 
-    [0x90B6, 2,  "uint",  "Charge started 18-19V"], 
-    [0x90B8, 2,  "uint",  "Charge started 19-20V"], 
-    [0x90BA, 2,  "uint",  "Charge started 20V+"], 
-    [0x90BC, 2,  "uint",  "Charge ended < 17V"], 
-    [0x90BE, 2,  "uint",  "Charge ended 17-18V"],         #110
-    [0x90C0, 2,  "uint",  "Charge ended 18-19V"],  
-    [0x90C2, 2,  "uint",  "Charge ended 19-20V"],  
-    [0x90C4, 2,  "uint",  "Charge ended 20V+"],
-    [0x90C6, 2,  "uint",  "Charge start temp -30C to -20C"], 
-    [0x90C8, 2,  "uint",  "Charge start temp -20C to -10C"], 
-    [0x90CA, 2,  "uint",  "Charge start temp -10C to 0C"],  
-    [0x90CC, 2,  "uint",  "Charge start temp 0C to +10C"],  
-    [0x90CE, 2,  "uint",  "Charge start temp +10C to +20C"],  
-    [0x90D0, 2,  "uint",  "Charge start temp +20C to +30C"], 
-    [0x90D2, 2,  "uint",  "Charge start temp +30C to +40C"],      #120
-    [0x90D4, 2,  "uint",  "Charge start temp +40C to +50C"],  
-    [0x90D6, 2,  "uint",  "Charge start temp +50C to +60C"], 
-    [0x90D8, 2,  "uint",  "Charge start temp +60C to +70C"],  
-    [0x90DA, 2,  "uint", "Charge start temp +70C to +80C"],  
-    [0x90DC, 2,  "uint",  "Charge start temp +80C and over"], 
-    [0x90DE, 2,  "uint",  "Charge end temp -30C to -20C"], 
-    [0x90E0, 2,  "uint",  "Charge end temp -20C to -10C"], 
-    [0x90E2, 2,  "uint",  "Charge end temp -10C to 0C"],  
-    [0x90E4, 2,  "uint",  "Charge end temp 0C to +10C"],  
-    [0x90E6, 2,  "uint",  "Charge end temp +10C to +20C"],         #130
-    [0x90E8, 2,  "uint",  "Charge end temp +30C to +30C"],
-    [0x90EA, 2,  "uint",  "Charge end temp +30C to +40C"],
-    [0x90EC, 2,  "uint",  "Charge end temp +40C to +50C"],
-    [0x90EE, 2,  "uint",  "Charge end temp +50C to +60C"],
-    [0x90F0, 2,  "uint",  "Charge end temp +60C to +70C"],
-    [0x90F2, 2,  "uint",  "Charge end temp +70C to +80C"],
-    [0x90F4, 2,  "uint",  "Charge end temp +80C and over"], 
-    [0x90F6, 2,  "uint",  "Dumb charge time (00:00-14:33)"], 
-    [0x90F8, 2,  "uint",  "Dumb charge time (14:34-29:07)"], 
-    [0x90FA, 2,  "uint",  "Dumb charge time (29:08-43:41)"],  #140
-    [0x90FC, 2,  "uint",  "Dumb charge time (43:42-58:15)"], 
-    [0x90FE, 2,  "uint",  "Dumb charge time (58:16-1:12:49)"], 
-    [0x9100, 2,  "uint",  "Dumb charge time (1:12:50-1:27:23)"], 
-    [0x9102, 2,  "uint",  "Dumb charge time (1:27:24-1:41:57)"], 
-    [0x9104, 2,  "uint",  "Dumb charge time (1:41:58-1:56:31)"], 
-    [0x9106, 2,  "uint",  "Dumb charge time (1:56:32-2:11:05)"], 
-    [0x9108, 2,  "uint",  "Dumb charge time (2:11:06-2:25:39)"], 
-    [0x910A, 2,  "uint",  "Dumb charge time (2:25:40-2:40:13)"], 
-    [0x910C, 2,  "uint",  "Dumb charge time (2:40:14-2:54:47)"], 
-    [0x910E, 2,  "uint",  "Dumb charge time (2:54:48-3:09:21)"],             #150
-    [0x9110, 2,  "uint",  "Dumb charge time (3:09:22-3:23:55)"], 
-    [0x9112, 2,  "uint",  "Redlink charge time (00:00-17:03)"], 
-    [0x9114, 2,  "uint",  "Redlink charge time (17:04-34:07)"], 
-    [0x9116, 2,  "uint",  "Redlink charge time (34:08-51:11)"], 
-    [0x9118, 2,  "uint",  "Redlink charge time (51:12-1:08:15)"], 
-    [0x911A, 2,  "uint",  "Redlink charge time (1:08:16-1:25:19)"], 
-    [0x911C, 2,  "uint",  "Redlink charge time (1:25:20-1:42:23)"], 
-    [0x911E, 2,  "uint",  "Redlink charge time (1:42:24-1:59:27)"], 
-    [0x9120, 2,  "uint",  "Redlink charge time (1:59:28-2:16:31)"], 
-    [0x9122, 2,  "uint",  "Redlink charge time (2:16:32-2:33:35)"],   #160 
-    [0x9124, 2,  "uint",  "Redlink charge time (2:33:36-2:50:39)"], 
-    [0x9126, 2,  "uint",  "Redlink charge time (2:50:40-3:07:43)"], 
-    [0x9128, 2,  "uint",  "Redlink charge time (3:07:44-3:24:47)"], 
-    [0x912A, 2,  "uint",  "Redlink charge time (3:24:48-3:41:51)"], 
-    [0x912C, 2,  "uint",  "Redlink charge time (3:41:52-3:58:55)"], 
-    [0x912E, 2,  "uint",  "Completed charge (?)"], 
-    [0x9130, 2,  "uint",  "Unknown"], 
-    [0x9132, 2,  "uint",  "Unknown"], 
-    [0x9134, 2,  "uint",  "Unknown"], 
-    [0x9136, 2,  "uint",  "Unknown"],       #170
-    [0x9138, 2,  "uint",  "Unknown"], 
-    [0x913A, 2,  "uint",  "Unknown"], 
-    [0x913C, 2,  "uint",  "Unknown"], 
-    [0x913E, 2,  "uint",  "Unknown"], 
-    [0x9140, 2,  "uint",  "Unknown"], 
-    [0x9142, 2,  "uint",  "Unknown"], 
-    [0x9144, 2,  "uint",  "Unknown"], 
-    [0x9146, 2,  "uint",  "Unknown"], 
-    [0x9148, 2,  "uint",  "Unknown (days of use?)"], 
-    [0x914A, 2,  "uint",  "Unknown"],       # 180
-    [0x914C, 2,  "uint",  "Unknown"], 
-    [0x914E, 2,  "uint",  "Unknown"], 
-    [0x9150, 2,  "uint",  "Unknown"],       #183
+    [0x0000, 2, "uint", "Cell type",                                    ["battery_info", "cell_type"]],
+    [0x0002, 2, "uint", "Unknown (always 0)",                           ["unknown", "unknown"]],
+    [0x0004, 5, "sn", "Capacity & Serial number (?)",                   ["battery_info", "capacity_serial_number"]],
+    [0x000D, 4, "uint", "Unknown (4th code?)",                          ["unknown", "unknown"]],
+    [0x0011, 4, "date", "Manufacture date",                             ["battery_dates", "manufacture_date"]],
+    [0x0015, 4, "date", "Date of first charge (Forge)",                 ["battery_dates", "first_charge_date_forge"]],
+    [0x0019, 4, "date", "Date of last charge (Forge)",                  ["battery_dates", "last_charge_date_forge"]],
+    [0x0023, 20, "ascii", "Note (ascii string)",                        ["unknown", "unknown"]],
+    [0x0037, 4, "date", "Current date",                                 ["battery_dates", "current_date"]],
+    [0x0069, 2, "uint", "Unknown (always 2)",                           ["battery_info", "unknown"]],
+    [0x007B, 1, "uint", "Unknown (always 0)",                           ["battery_info", "unknown"]],
+    [0x4000, 4, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x400A, 10, "cell_v", "Cell voltages (mV)",                        ["battery_voltages", "cell_voltages_mv"]],
+    [0x4014, 2, "adc_t", "Temperature (C) (non-Forge)",                 ["battery_temperatures", "temperature"]],
+    [0x4016, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x4019, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x401B, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x401D, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x401F, 2, "dec_t", "Temperature (C) (Forge)",                     ["battery_temperatures", "temperature_forge"]],
+    [0x6000, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x6002, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x6004, 4, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x6008, 4, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x600C, 2, "uint", "Unknown (Forge)",                              ["battery_forge", "unknown"]],
+    [0x9000, 4, "date", "Date of first charge (rounded)",               ["battery_dates", "first_charge_date"]],
+    [0x9004, 4, "date", "Date of last tool use (rounded)",              ["battery_dates", "last_tool_use_date"]],
+    [0x9008, 4, "date", "Date of last charge (rounded)",                ["battery_dates", "last_charge_date"]],
+    [0x900C, 4, "date", "Unknown date (often zero)",                    ["battery_dates", "unknown_date_often_zero"]],
+    [0x9010, 2, "uint", "Days since first charge",                      ["battery_usage", "days_since_first_charge"]],
+    [0x9012, 4, "uint", "Total discharge (amp-sec)",                    ["battery_usage", "total_discharge_amp_sec"]],
+    [0x9016, 4, "uint", "Total discharge (watt-sec or joules)",         ["battery_usage", "total_discharge_watt_sec_joules"]],
+    [0x901A, 4, "uint", "Total charge count",                           ["charge_events", "total_charge_count"]],
+    [0x901E, 2, "uint", "Dumb charge count (J2>7.1V for >=0.48s)",      ["charge_events", "dumb_charge_count"]],
+    [0x9020, 2, "uint", "Redlink (UART) charge count",                  ["charge_events", "redlink_uart_charge_count"]],
+    [0x9022, 2, "uint", "Completed charge count (?)",                   ["charge_events", "completed_charge_count"]],
+    [0x9024, 4, "hhmmss", "Total charging time (HH:MM:SS)",             ["charge_events", "total_charging_time"]],
+    [0x9028, 4, "hhmmss", "Time on charger whilst full (HH:MM:SS)",     ["charge_events", "time_on_charger_full"]],
+    [0x902C, 2, "uint", "Unknown (almost always 0)",                    ["battery_info", "unknown_almost_always_0"]],
+    [0x9030, 2, "uint", "Discharge to empty",                           ["discharges_events", "discharge", "discharge_to_empty"]],
+    [0x902E, 2, "uint", "Charge started with a cell < 2.5V",            ["charge_events", "started", "charge_started_cell_lt_2_5v"]],
+    [0x9032, 2, "uint", "Num. overheat on tool (must be > 10A)",        ["battery_events", "overheat_on_tool_count"]],
+    [0x9034, 2, "uint", "Overcurrent?",                                 ["battery_events", "overcurrent_count"]],
+    [0x9036, 2, "uint", "Low voltage events)",                          ["battery_events", "low_voltage_events"]],
+    [0x9038, 2, "uint", "Low-voltage bounce? (4 flashing LEDs)",        ["battery_events", "low_voltage_bounce"]],
+    [0x903A, 2, "uint", "Discharge @ 10-20A (seconds)",                 ["discharges_events", "discharge", "discharge_10_20a_seconds"]],
+    [0x903C, 2, "uint", "          @ 20-30A (could be watts)",          ["discharges_events", "discharge", "discharge_20_30a"]],
+    [0x903E, 2, "uint", "          @ 30-40A      ",                     ["discharges_events", "discharge", "discharge_30_40a"]],
+    [0x9040, 2, "uint", "          @ 40-50A      ",                     ["discharges_events", "discharge", "discharge_40_50a"]],
+    [0x9042, 2, "uint", "          @ 50-60A      ",                     ["discharges_events", "discharge", "discharge_50_60a"]],
+    [0x9044, 2, "uint", "          @ 60-70A      ",                     ["discharges_events", "discharge", "discharge_60_70a"]],
+    [0x9046, 2, "uint", "          @ 70-80A      ",                     ["discharges_events", "discharge", "discharge_70_80a"]],
+    [0x9048, 2, "uint", "          @ 80-90A      ",                     ["discharges_events", "discharge", "discharge_80_90a"]],
+    [0x904A, 2, "uint", "          @ 90-100A     ",                     ["discharges_events", "discharge", "discharge_90_100a"]],
+    [0x904C, 2, "uint", "          @ 100-110A    ",                     ["discharges_events", "discharge", "discharge_100_110a"]],
+    [0x904E, 2, "uint", "          @ 110-120A    ",                     ["discharges_events", "discharge", "discharge_110_120a"]],
+    [0x9050, 2, "uint", "          @ 120-130A    ",                     ["discharges_events", "discharge", "discharge_120_130a"]],
+    [0x9052, 2, "uint", "          @ 130-140A    ",                     ["discharges_events", "discharge", "discharge_130_140a"]],
+    [0x9054, 2, "uint", "          @ 140-150A    ",                     ["discharges_events", "discharge", "discharge_140_150a"]],
+    [0x9056, 2, "uint", "          @ 150-160A    ",                     ["discharges_events", "discharge", "discharge_150_160a"]],
+    [0x9058, 2, "uint", "          @ 160-170A    ",                     ["discharges_events", "discharge", "discharge_160_170a"]],
+    [0x905A, 2, "uint", "          @ 170-180A    ",                     ["discharges_events", "discharge", "discharge_170_180a"]],
+    [0x905C, 2, "uint", "          @ 180-190A    ",                     ["discharges_events", "discharge", "discharge_180_190a"]],
+    [0x905E, 2, "uint", "          @ 190-200A    ",                     ["discharges_events", "discharge", "discharge_190_200a"]],
+    [0x9060, 2, "uint", "          @ 200-210A    ",                     ["discharges_events", "discharge", "discharge_200_210a"]],
+    [0x9062, 2, "uint", "Unknown (larger in lower Ah packs)",           ["unknown", "unknown"]],
+    [0x9064, 2, "uint", "Discharge @ 10-15A (seconds)",                 ["discharges_events", "discharge", "discharge_10_15a_seconds"]],
+    [0x9066, 2, "uint", "          @ 15-20A (could be watts)",          ["discharges_events", "discharge", "discharge_15_20a"]],
+    [0x9068, 2, "uint", "          @ 20-25A      ",                     ["discharges_events", "discharge", "discharge_20_25a"]],
+    [0x906A, 2, "uint", "          @ 25-30A      ",                     ["discharges_events", "discharge", "discharge_25_30a"]],
+    [0x906C, 2, "uint", "          @ 30-35A      ",                     ["discharges_events", "discharge", "discharge_30_35a"]],
+    [0x906E, 2, "uint", "          @ 35-40A      ",                     ["discharges_events", "discharge", "discharge_35_40a"]],
+    [0x9070, 2, "uint", "          @ 40-45A      ",                     ["discharges_events", "discharge", "discharge_40_45a"]],
+    [0x9072, 2, "uint", "          @ 45-50A      ",                     ["discharges_events", "discharge", "discharge_45_50a"]],
+    [0x9074, 2, "uint", "          @ 50-55A      ",                     ["discharges_events", "discharge", "discharge_50_55a"]],
+    [0x9076, 2, "uint", "          @ 55-60A      ",                     ["discharges_events", "discharge", "discharge_55_60a"]],
+    [0x9078, 2, "uint", "          @ 60-65A      ",                     ["discharges_events", "discharge", "discharge_60_65a"]],
+    [0x907A, 2, "uint", "          @ 65-70A      ",                     ["discharges_events", "discharge", "discharge_65_70a"]],
+    [0x907C, 2, "uint", "          @ 70-65A      ",                     ["discharges_events", "discharge", "discharge_70_75a"]],
+    [0x907E, 2, "uint", "          @ 75-80A      ",                     ["discharges_events", "discharge", "discharge_75_80a"]],
+    [0x9080, 2, "uint", "          @ 80-85A      ",                     ["discharges_events", "discharge", "discharge_80_85a"]],
+    [0x9082, 2, "uint", "          @ 85-90A      ",                     ["discharges_events", "discharge", "discharge_85_90a"]],
+    [0x9084, 2, "uint", "          @ 90-95A      ",                     ["discharges_events", "discharge", "discharge_90_95a"]],
+    [0x9086, 2, "uint", "          @ 95-100A     ",                     ["discharges_events", "discharge", "discharge_95_100a"]],
+    [0x9088, 2, "uint", "          @ 100-105A    ",                     ["discharges_events", "discharge", "discharge_100_105a"]],
+    [0x908A, 2, "uint", "          @ 105-110A    ",                     ["discharges_events", "discharge", "discharge_105_110a"]],
+    [0x908C, 2, "uint", "          @ 110-115A    ",                     ["discharges_events", "discharge", "discharge_110_115a"]],
+    [0x908E, 2, "uint", "          @ 115-120A    ",                     ["discharges_events", "discharge", "discharge_115_120a"]],
+    [0x9090, 2, "uint", "          @ 120-125A    ",                     ["discharges_events", "discharge", "discharge_120_125a"]],
+    [0x9092, 2, "uint", "          @ 125-130A    ",                     ["discharges_events", "discharge", "discharge_125_130a"]],
+    [0x9094, 2, "uint", "          @ 130-135A    ",                     ["discharges_events", "discharge", "discharge_130_135a"]],
+    [0x9096, 2, "uint", "          @ 135-140A    ",                     ["discharges_events", "discharge", "discharge_135_140a"]],
+    [0x9098, 2, "uint", "          @ 140-145A    ",                     ["discharges_events", "discharge", "discharge_140_145a"]],
+    [0x909A, 2, "uint", "          @ 145-150A    ",                     ["discharges_events", "discharge", "discharge_145_150a"]],
+    [0x909C, 2, "uint", "          @ 150-155A    ",                     ["discharges_events", "discharge", "discharge_150_155a"]],
+    [0x909E, 2, "uint", "          @ 155-160A    ",                     ["discharges_events", "discharge", "discharge_155_160a"]],
+    [0x90A0, 2, "uint", "          @ 160-165A    ",                     ["discharges_events", "discharge", "discharge_160_165a"]],
+    [0x90A2, 2, "uint", "          @ 165-170A    ",                     ["discharges_events", "discharge", "discharge_165_170a"]],
+    [0x90A4, 2, "uint", "          @ 170-175A    ",                     ["discharges_events", "discharge", "discharge_170_175a"]],
+    [0x90A6, 2, "uint", "          @ 175-180A    ",                     ["discharges_events", "discharge", "discharge_175_180a"]],
+    [0x90A8, 2, "uint", "          @ 180-185A    ",                     ["discharges_events", "discharge", "discharge_180_185a"]],
+    [0x90AA, 2, "uint", "          @ 185-190A    ",                     ["discharges_events", "discharge", "discharge_185_190a"]],
+    [0x90AC, 2, "uint", "          @ 190-195A    ",                     ["discharges_events", "discharge", "discharge_190_195a"]],
+    [0x90AE, 2, "uint", "          @ 195-200A    ",                     ["discharges_events", "discharge", "discharge_195_200a"]],
+    [0x90B0, 2, "uint", "          @ 200A+       ",                     ["discharges_events", "discharge", "discharge_200a_plus"]],
+    [0x90B2, 2, "uint", "Charge started < 17V",                         ["charge_events", "started", "charge_started_lt_17v"]],
+    [0x90B4, 2, "uint", "Charge started 17-18V",                        ["charge_events", "started", "charge_started_17_18v"]],
+    [0x90B6, 2, "uint", "Charge started 18-19V",                        ["charge_events", "started", "charge_started_18_19v"]],
+    [0x90B8, 2, "uint", "Charge started 19-20V",                        ["charge_events", "started", "charge_started_19_20v"]],
+    [0x90BA, 2, "uint", "Charge started 20V+",                          ["charge_events", "started", "charge_started_20v_plus"]],
+    [0x90BC, 2, "uint", "Charge ended < 17V",                           ["charge_events", "ended", "charge_ended_lt_17v"]],
+    [0x90BE, 2, "uint", "Charge ended 17-18V",                          ["charge_events", "ended", "charge_ended_17_18v"]],
+    [0x90C0, 2, "uint", "Charge ended 18-19V",                          ["charge_events", "ended", "charge_ended_18_19v"]],
+    [0x90C2, 2, "uint", "Charge ended 19-20V",                          ["charge_events", "ended", "charge_ended_19_20v"]],
+    [0x90C4, 2, "uint", "Charge ended 20V+",                            ["charge_events", "ended", "charge_ended_20v_plus"]],
+    [0x90C6, 2, "uint", "Charge start temp -30C to -20C",               ["charge_events", "start", "charge_start_temp_m30_to_m20c"]],
+    [0x90C8, 2, "uint", "Charge start temp -20C to -10C",               ["charge_events", "start", "charge_start_temp_m20_to_m10c"]],
+    [0x90CA, 2, "uint", "Charge start temp -10C to 0C",                 ["charge_events", "start", "charge_start_temp_m10_to_0c"]],
+    [0x90CC, 2, "uint", "Charge start temp 0C to +10C",                 ["charge_events", "start", "charge_start_temp_0_to_10c"]],
+    [0x90CE, 2, "uint", "Charge start temp +10C to +20C",               ["charge_events", "start", "charge_start_temp_10_to_20c"]],
+    [0x90D0, 2, "uint", "Charge start temp +20C to +30C",               ["charge_events", "start", "charge_start_temp_20_to_30c"]],
+    [0x90D2, 2, "uint", "Charge start temp +30C to +40C",               ["charge_events", "start", "charge_start_temp_30_to_40c"]],
+    [0x90D4, 2, "uint", "Charge start temp +40C to +50C",               ["charge_events", "start", "charge_start_temp_40_to_50c"]],
+    [0x90D6, 2, "uint", "Charge start temp +50C to +60C",               ["charge_events", "start", "charge_start_temp_50_to_60c"]],
+    [0x90D8, 2, "uint", "Charge start temp +60C to +70C",               ["charge_events", "start", "charge_start_temp_60_to_70c"]],
+    [0x90DA, 2, "uint", "Charge start temp +70C to +80C",               ["charge_events", "start", "charge_start_temp_70_to_80c"]],
+    [0x90DC, 2, "uint", "Charge start temp +80C and over",              ["charge_events", "start", "charge_start_temp_80c_plus"]],
+    [0x90DE, 2, "uint", "Charge end temp -30C to -20C",                 ["charge_events", "end", "charge_end_temp_m30_to_m20c"]],
+    [0x90E0, 2, "uint", "Charge end temp -20C to -10C",                 ["charge_events", "end", "charge_end_temp_m20_to_m10c"]],
+    [0x90E2, 2, "uint", "Charge end temp -10C to 0C",                   ["charge_events", "end", "charge_end_temp_m10_to_0c"]],
+    [0x90E4, 2, "uint", "Charge end temp 0C to +10C",                   ["charge_events", "end", "charge_end_temp_0_to_10c"]],
+    [0x90E6, 2, "uint", "Charge end temp +10C to +20C",                 ["charge_events", "end", "charge_end_temp_10_to_20c"]],
+    [0x90E8, 2, "uint", "Charge end temp +30C to +30C",                 ["charge_events", "end", "charge_end_temp_20_to_30c"]],
+    [0x90EA, 2, "uint", "Charge end temp +30C to +40C",                 ["charge_events", "end", "charge_end_temp_30_to_40c"]],
+    [0x90EC, 2, "uint", "Charge end temp +40C to +50C",                 ["charge_events", "end", "charge_end_temp_40_to_50c"]],
+    [0x90EE, 2, "uint", "Charge end temp +50C to +60C",                 ["charge_events", "end", "charge_end_temp_50_to_60c"]],
+    [0x90F0, 2, "uint", "Charge end temp +60C to +70C",                 ["charge_events", "end", "charge_end_temp_60_to_70c"]],
+    [0x90F2, 2, "uint", "Charge end temp +70C to +80C",                 ["charge_events", "end", "charge_end_temp_70_to_80c"]],
+    [0x90F4, 2, "uint", "Charge end temp +80C and over",                ["charge_events", "end", "charge_end_temp_80c_plus"]],
+    [0x90F6, 2, "uint", "Dumb charge time (00:00-14:33)",               ["charge_events", "dump", "dumb_charge_time_0_14"]],
+    [0x90F8, 2, "uint", "Dumb charge time (14:34-29:07)",               ["charge_events", "dump", "dumb_charge_time_14_29"]],
+    [0x90FA, 2, "uint", "Dumb charge time (29:08-43:41)",               ["charge_events", "dump", "dumb_charge_time_29_43"]],
+    [0x90FC, 2, "uint", "Dumb charge time (43:42-58:15)",               ["charge_events", "dump", "dumb_charge_time_43_58"]],
+    [0x90FE, 2, "uint", "Dumb charge time (58:16-1:12:49)",             ["charge_events", "dump", "dumb_charge_time_58_72"]],
+    [0x9100, 2, "uint", "Dumb charge time (1:12:50-1:27:23)",           ["charge_events", "dump", "dumb_charge_time_72_87"]],
+    [0x9102, 2, "uint", "Dumb charge time (1:27:24-1:41:57)",           ["charge_events", "dump", "dumb_charge_time_87_101"]],
+    [0x9104, 2, "uint", "Dumb charge time (1:41:58-1:56:31)",           ["charge_events", "dump", "dumb_charge_time_101_116"]],
+    [0x9106, 2, "uint", "Dumb charge time (1:56:32-2:11:05)",           ["charge_events", "dump", "dumb_charge_time_116_131"]],
+    [0x9108, 2, "uint", "Dumb charge time (2:11:06-2:25:39)",           ["charge_events", "dump", "dumb_charge_time_131_145"]],
+    [0x910A, 2, "uint", "Dumb charge time (2:25:40-2:40:13)",           ["charge_events", "dump", "dumb_charge_time_145_160"]],
+    [0x910C, 2, "uint", "Dumb charge time (2:40:14-2:54:47)",           ["charge_events", "dump", "dumb_charge_time_160_174"]],
+    [0x910E, 2, "uint", "Dumb charge time (2:54:48-3:09:21)",           ["charge_events", "dump", "dumb_charge_time_174_189"]],
+    [0x9110, 2, "uint", "Dumb charge time (3:09:22-3:23:55)",           ["charge_events", "dump", "dumb_charge_time_189_203"]],
+    [0x9112, 2, "uint", "Redlink charge time (00:00-17:03)",            ["charge_events", "redlink", "redlink_charge_time_0_17"]],
+    [0x9114, 2, "uint", "Redlink charge time (17:04-34:07)",            ["charge_events", "redlink", "redlink_charge_time_17_34"]],
+    [0x9116, 2, "uint", "Redlink charge time (34:08-51:11)",            ["charge_events", "redlink", "redlink_charge_time_34_51"]],
+    [0x9118, 2, "uint", "Redlink charge time (51:12-1:08:15)",          ["charge_events", "redlink", "redlink_charge_time_51_68"]],
+    [0x911A, 2, "uint", "Redlink charge time (1:08:16-1:25:19)",        ["charge_events", "redlink", "redlink_charge_time_68_85"]],
+    [0x911C, 2, "uint", "Redlink charge time (1:25:20-1:42:23)",        ["charge_events", "redlink", "redlink_charge_time_85_102"]],
+    [0x911E, 2, "uint", "Redlink charge time (1:42:24-1:59:27)",        ["charge_events", "redlink", "redlink_charge_time_102_119"]],
+    [0x9120, 2, "uint", "Redlink charge time (1:59:28-2:16:31)",        ["charge_events", "redlink", "redlink_charge_time_119_136"]],
+    [0x9122, 2, "uint", "Redlink charge time (2:16:32-2:33:35)",        ["charge_events", "redlink", "redlink_charge_time_136_153"]],
+    [0x9124, 2, "uint", "Redlink charge time (2:33:36-2:50:39)",        ["charge_events", "redlink", "redlink_charge_time_153_170"]],
+    [0x9126, 2, "uint", "Redlink charge time (2:50:40-3:07:43)",        ["charge_events", "redlink", "redlink_charge_time_170_187"]],
+    [0x9128, 2, "uint", "Redlink charge time (3:07:44-3:24:47)",        ["charge_events", "redlink", "redlink_charge_time_187_204"]],
+    [0x912A, 2, "uint", "Redlink charge time (3:24:48-3:41:51)",        ["charge_events", "redlink", "redlink_charge_time_204_221"]],
+    [0x912C, 2, "uint", "Redlink charge time (3:41:52-3:58:55)",        ["charge_events", "redlink", "redlink_charge_time_221_238"]],
+    [0x912E, 2, "uint", "Completed charge (?)",                         ["charge_events", "completed_charge"]],
+    [0x9130, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9132, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9134, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9136, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9138, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x913A, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x913C, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x913E, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9140, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9142, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9144, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9146, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9148, 2, "uint", "Unknown (days of use?)",                       ["unknown", "unknown"]],
+    [0x914A, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x914C, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x914E, 2, "uint", "Unknown",                                      ["unknown", "unknown"]],
+    [0x9150, 2, "uint", "Unknown",                                      ["unknown", "unknown"]]
 ]
 
 
@@ -436,7 +437,6 @@ class M18:
             self.idle() 
             
         self.txrx_restore() # restore TX/RX print status
-    
 
     def simulate_for(self, duration):
         # Simulate charging for 'time' seconds
@@ -491,13 +491,11 @@ class M18:
         print(f"Response from: 0x{(msb * 0x100 + lsb):04X}:", data_print)
         self.idle()
         self.txrx_restore()
-        
-    
+            
     def cmd(self, a,b,c,length, command = 0x01):
         self.send_command(struct.pack('>BBBBBB', command, 0x04, 0x03, a, b, c))
         return self.read_response(length)
         
-
     def brute(self, a, b, len = 0xFF, command = 0x01):
         self.reset()
         try:
@@ -998,6 +996,63 @@ class M18:
             m.calibrate() - calibration/interrupt command (0x55) \n \
             m.keepalive() - send charge current request (0x62) \n") 
 
+    def create_json(self):
+        print("Getting data from battery...")
+        output = self.read_id(output="array")
+
+        if not output:
+            print("No data received from battery.")
+            return
+
+        grouped_output = {}
+
+        for id_val, value in output:
+            entry = data_id[id_val]
+            addr, length, data_type, description, path = entry
+
+            if isinstance(value, datetime.datetime):
+                formatted_value = value.strftime('%Y-%m-%d %H:%M:%S')
+            elif data_type == "ascii":
+                formatted_value = str(value).strip('"')
+            elif data_type == "sn":
+                numbers = re.findall(r'\d+', str(value))
+                formatted_value = {
+                    "type": int(numbers[0]) if numbers else None,
+                    "serial": int(numbers[1]) if len(numbers) > 1 else None
+                }
+            elif data_type == "cell_v":
+                formatted_value = {f"cell_{i+1}": v for i, v in enumerate(value)}
+            elif data_type in ["uint", "adc_t", "dec_t", "hhmmss"]:
+                formatted_value = value
+            else:
+                formatted_value = str(value)
+
+            register_entry = {
+                "address": f"0x{addr:04X}",
+                "description": description,
+                "value": formatted_value
+            }
+
+            current = grouped_output
+            for key in path[:-1]:
+                if key not in current:
+                    current[key] = {}
+                current = current[key]
+            current[path[-1]] = register_entry
+
+        result = {
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "data": grouped_output
+        }
+
+        filename = "web/static/battery_data.json"
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(result, f, indent=2)
+            print(f"JSON data saved to {filename}")
+
+
+
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -1005,6 +1060,7 @@ if __name__ == '__main__':
         epilog="Connect UART-TX to M18-J2 and UART-RX to M18-J1 to fake the charger and UART-GND to M18-GND")
     parser.add_argument('--port', type=str, help="Serial port to connect to (e.g., COM5)")
     parser.add_argument('--health', action='store_true', help='Print health report and exit')
+    parser.add_argument('--create_json', action='store_true', help='Create Json to view web')
     parser.add_argument('--ss', action='store_true', help='Spreadsheet output: Print all register values and exit')
     parser.add_argument('--idle', action='store_true', help='Set TX=Low and exit. Prevents unwanted charge increments')
     args = parser.parse_args()
@@ -1020,6 +1076,8 @@ if __name__ == '__main__':
             print("TX should now be low voltage (<1V). Safe to connect")
         elif args.health:
             m.health()
+        elif args.create_json:
+            m.create_json()
         elif args.ss:
             m.read_id(output="raw")
         else:
