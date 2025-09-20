@@ -1,0 +1,818 @@
+{
+  "timestamp": "2025-09-20 20:02:51",
+  "data": {
+    "battery_info": {
+      "cell_type": {
+        "address": "0x0000",
+        "description": "Cell type",
+        "value": 5
+      },
+      "capacity_serial_number": {
+        "address": "0x0004",
+        "description": "Capacity & Serial number (?)",
+        "value": {
+          "type": 165,
+          "serial": 8409502
+        }
+      },
+      "unknown": {
+        "address": "0x007B",
+        "description": "Unknown (always 0)",
+        "value": 0
+      },
+      "unknown_almost_always_0": {
+        "address": "0x902C",
+        "description": "Unknown (almost always 0)",
+        "value": 0
+      }
+    },
+    "unknown": {
+      "unknown": {
+        "address": "0x9150",
+        "description": "Unknown",
+        "value": 0
+      }
+    },
+    "battery_dates": {
+      "manufacture_date": {
+        "address": "0x0011",
+        "description": "Manufacture date",
+        "value": "2020-10-20 09:50:10"
+      },
+      "first_charge_date_forge": {
+        "address": "0x0015",
+        "description": "Date of first charge (Forge)",
+        "value": "None"
+      },
+      "last_charge_date_forge": {
+        "address": "0x0019",
+        "description": "Date of last charge (Forge)",
+        "value": "None"
+      },
+      "current_date": {
+        "address": "0x0037",
+        "description": "Current date",
+        "value": "2024-08-09 05:21:22"
+      },
+      "first_charge_date": {
+        "address": "0x9000",
+        "description": "Date of first charge (rounded)",
+        "value": "2021-11-14 09:50:10"
+      },
+      "last_tool_use_date": {
+        "address": "0x9004",
+        "description": "Date of last tool use (rounded)",
+        "value": "2024-07-02 09:50:10"
+      },
+      "last_charge_date": {
+        "address": "0x9008",
+        "description": "Date of last charge (rounded)",
+        "value": "2024-08-08 09:50:10"
+      },
+      "unknown_date_often_zero": {
+        "address": "0x900C",
+        "description": "Unknown date (often zero)",
+        "value": "2023-07-20 09:50:10"
+      }
+    },
+    "battery_forge": {
+      "unknown": {
+        "address": "0x600C",
+        "description": "Unknown (Forge)",
+        "value": null
+      }
+    },
+    "battery_voltages": {
+      "cell_voltages_mv": {
+        "address": "0x400A",
+        "description": "Cell voltages (mV)",
+        "value": {
+          "cell_1": 0,
+          "cell_2": 0,
+          "cell_3": 2511,
+          "cell_4": 4060,
+          "cell_5": 4077
+        }
+      }
+    },
+    "battery_temperatures": {
+      "temperature": {
+        "address": "0x4014",
+        "description": "Temperature (C) (non-Forge)",
+        "value": 30.52
+      },
+      "temperature_forge": {
+        "address": "0x401F",
+        "description": "Temperature (C) (Forge)",
+        "value": null
+      }
+    },
+    "battery_usage": {
+      "days_since_first_charge": {
+        "address": "0x9010",
+        "description": "Days since first charge",
+        "value": 1388
+      },
+      "total_discharge_amp_sec": {
+        "address": "0x9012",
+        "description": "Total discharge (amp-sec)",
+        "value": 151743
+      },
+      "total_discharge_watt_sec_joules": {
+        "address": "0x9016",
+        "description": "Total discharge (watt-sec or joules)",
+        "value": 2468635
+      }
+    },
+    "charge_events": {
+      "total_charge_count": {
+        "address": "0x901A",
+        "description": "Total charge count",
+        "value": 156
+      },
+      "dumb_charge_count": {
+        "address": "0x901E",
+        "description": "Dumb charge count (J2>7.1V for >=0.48s)",
+        "value": 80
+      },
+      "redlink_uart_charge_count": {
+        "address": "0x9020",
+        "description": "Redlink (UART) charge count",
+        "value": 76
+      },
+      "completed_charge_count": {
+        "address": "0x9022",
+        "description": "Completed charge count (?)",
+        "value": 14
+      },
+      "total_charging_time": {
+        "address": "0x9024",
+        "description": "Total charging time (HH:MM:SS)",
+        "value": "16:31:13"
+      },
+      "time_on_charger_full": {
+        "address": "0x9028",
+        "description": "Time on charger whilst full (HH:MM:SS)",
+        "value": "2966:11:31"
+      },
+      "started": {
+        "charge_started_cell_lt_2_5v": {
+          "address": "0x902E",
+          "description": "Charge started with a cell < 2.5V",
+          "value": 0
+        },
+        "charge_started_lt_17v": {
+          "address": "0x90B2",
+          "description": "Charge started < 17V",
+          "value": 54
+        },
+        "charge_started_17_18v": {
+          "address": "0x90B4",
+          "description": "Charge started 17-18V",
+          "value": 5
+        },
+        "charge_started_18_19v": {
+          "address": "0x90B6",
+          "description": "Charge started 18-19V",
+          "value": 3
+        },
+        "charge_started_19_20v": {
+          "address": "0x90B8",
+          "description": "Charge started 19-20V",
+          "value": 5
+        },
+        "charge_started_20v_plus": {
+          "address": "0x90BA",
+          "description": "Charge started 20V+",
+          "value": 89
+        }
+      },
+      "ended": {
+        "charge_ended_lt_17v": {
+          "address": "0x90BC",
+          "description": "Charge ended < 17V",
+          "value": 38
+        },
+        "charge_ended_17_18v": {
+          "address": "0x90BE",
+          "description": "Charge ended 17-18V",
+          "value": 0
+        },
+        "charge_ended_18_19v": {
+          "address": "0x90C0",
+          "description": "Charge ended 18-19V",
+          "value": 0
+        },
+        "charge_ended_19_20v": {
+          "address": "0x90C2",
+          "description": "Charge ended 19-20V",
+          "value": 0
+        },
+        "charge_ended_20v_plus": {
+          "address": "0x90C4",
+          "description": "Charge ended 20V+",
+          "value": 118
+        }
+      },
+      "start": {
+        "charge_start_temp_m30_to_m20c": {
+          "address": "0x90C6",
+          "description": "Charge start temp -30C to -20C",
+          "value": 0
+        },
+        "charge_start_temp_m20_to_m10c": {
+          "address": "0x90C8",
+          "description": "Charge start temp -20C to -10C",
+          "value": 0
+        },
+        "charge_start_temp_m10_to_0c": {
+          "address": "0x90CA",
+          "description": "Charge start temp -10C to 0C",
+          "value": 0
+        },
+        "charge_start_temp_0_to_10c": {
+          "address": "0x90CC",
+          "description": "Charge start temp 0C to +10C",
+          "value": 0
+        },
+        "charge_start_temp_10_to_20c": {
+          "address": "0x90CE",
+          "description": "Charge start temp +10C to +20C",
+          "value": 2
+        },
+        "charge_start_temp_20_to_30c": {
+          "address": "0x90D0",
+          "description": "Charge start temp +20C to +30C",
+          "value": 114
+        },
+        "charge_start_temp_30_to_40c": {
+          "address": "0x90D2",
+          "description": "Charge start temp +30C to +40C",
+          "value": 38
+        },
+        "charge_start_temp_40_to_50c": {
+          "address": "0x90D4",
+          "description": "Charge start temp +40C to +50C",
+          "value": 1
+        },
+        "charge_start_temp_50_to_60c": {
+          "address": "0x90D6",
+          "description": "Charge start temp +50C to +60C",
+          "value": 0
+        },
+        "charge_start_temp_60_to_70c": {
+          "address": "0x90D8",
+          "description": "Charge start temp +60C to +70C",
+          "value": 1
+        },
+        "charge_start_temp_70_to_80c": {
+          "address": "0x90DA",
+          "description": "Charge start temp +70C to +80C",
+          "value": 0
+        },
+        "charge_start_temp_80c_plus": {
+          "address": "0x90DC",
+          "description": "Charge start temp +80C and over",
+          "value": 0
+        }
+      },
+      "end": {
+        "charge_end_temp_m30_to_m20c": {
+          "address": "0x90DE",
+          "description": "Charge end temp -30C to -20C",
+          "value": 0
+        },
+        "charge_end_temp_m20_to_m10c": {
+          "address": "0x90E0",
+          "description": "Charge end temp -20C to -10C",
+          "value": 0
+        },
+        "charge_end_temp_m10_to_0c": {
+          "address": "0x90E2",
+          "description": "Charge end temp -10C to 0C",
+          "value": 0
+        },
+        "charge_end_temp_0_to_10c": {
+          "address": "0x90E4",
+          "description": "Charge end temp 0C to +10C",
+          "value": 0
+        },
+        "charge_end_temp_10_to_20c": {
+          "address": "0x90E6",
+          "description": "Charge end temp +10C to +20C",
+          "value": 5
+        },
+        "charge_end_temp_20_to_30c": {
+          "address": "0x90E8",
+          "description": "Charge end temp +30C to +30C",
+          "value": 114
+        },
+        "charge_end_temp_30_to_40c": {
+          "address": "0x90EA",
+          "description": "Charge end temp +30C to +40C",
+          "value": 35
+        },
+        "charge_end_temp_40_to_50c": {
+          "address": "0x90EC",
+          "description": "Charge end temp +40C to +50C",
+          "value": 2
+        },
+        "charge_end_temp_50_to_60c": {
+          "address": "0x90EE",
+          "description": "Charge end temp +50C to +60C",
+          "value": 0
+        },
+        "charge_end_temp_60_to_70c": {
+          "address": "0x90F0",
+          "description": "Charge end temp +60C to +70C",
+          "value": 0
+        },
+        "charge_end_temp_70_to_80c": {
+          "address": "0x90F2",
+          "description": "Charge end temp +70C to +80C",
+          "value": 0
+        },
+        "charge_end_temp_80c_plus": {
+          "address": "0x90F4",
+          "description": "Charge end temp +80C and over",
+          "value": 0
+        }
+      },
+      "dump": {
+        "dumb_charge_time_0_14": {
+          "address": "0x90F6",
+          "description": "Dumb charge time (00:00-14:33)",
+          "value": 0
+        },
+        "dumb_charge_time_14_29": {
+          "address": "0x90F8",
+          "description": "Dumb charge time (14:34-29:07)",
+          "value": 0
+        },
+        "dumb_charge_time_29_43": {
+          "address": "0x90FA",
+          "description": "Dumb charge time (29:08-43:41)",
+          "value": 0
+        },
+        "dumb_charge_time_43_58": {
+          "address": "0x90FC",
+          "description": "Dumb charge time (43:42-58:15)",
+          "value": 0
+        },
+        "dumb_charge_time_58_72": {
+          "address": "0x90FE",
+          "description": "Dumb charge time (58:16-1:12:49)",
+          "value": 0
+        },
+        "dumb_charge_time_72_87": {
+          "address": "0x9100",
+          "description": "Dumb charge time (1:12:50-1:27:23)",
+          "value": 0
+        },
+        "dumb_charge_time_87_101": {
+          "address": "0x9102",
+          "description": "Dumb charge time (1:27:24-1:41:57)",
+          "value": 0
+        },
+        "dumb_charge_time_101_116": {
+          "address": "0x9104",
+          "description": "Dumb charge time (1:41:58-1:56:31)",
+          "value": 0
+        },
+        "dumb_charge_time_116_131": {
+          "address": "0x9106",
+          "description": "Dumb charge time (1:56:32-2:11:05)",
+          "value": 0
+        },
+        "dumb_charge_time_131_145": {
+          "address": "0x9108",
+          "description": "Dumb charge time (2:11:06-2:25:39)",
+          "value": 0
+        },
+        "dumb_charge_time_145_160": {
+          "address": "0x910A",
+          "description": "Dumb charge time (2:25:40-2:40:13)",
+          "value": 0
+        },
+        "dumb_charge_time_160_174": {
+          "address": "0x910C",
+          "description": "Dumb charge time (2:40:14-2:54:47)",
+          "value": 0
+        },
+        "dumb_charge_time_174_189": {
+          "address": "0x910E",
+          "description": "Dumb charge time (2:54:48-3:09:21)",
+          "value": 0
+        },
+        "dumb_charge_time_189_203": {
+          "address": "0x9110",
+          "description": "Dumb charge time (3:09:22-3:23:55)",
+          "value": 0
+        }
+      },
+      "redlink": {
+        "redlink_charge_time_0_17": {
+          "address": "0x9112",
+          "description": "Redlink charge time (00:00-17:03)",
+          "value": 3
+        },
+        "redlink_charge_time_17_34": {
+          "address": "0x9114",
+          "description": "Redlink charge time (17:04-34:07)",
+          "value": 0
+        },
+        "redlink_charge_time_34_51": {
+          "address": "0x9116",
+          "description": "Redlink charge time (34:08-51:11)",
+          "value": 4
+        },
+        "redlink_charge_time_51_68": {
+          "address": "0x9118",
+          "description": "Redlink charge time (51:12-1:08:15)",
+          "value": 1
+        },
+        "redlink_charge_time_68_85": {
+          "address": "0x911A",
+          "description": "Redlink charge time (1:08:16-1:25:19)",
+          "value": 3
+        },
+        "redlink_charge_time_85_102": {
+          "address": "0x911C",
+          "description": "Redlink charge time (1:25:20-1:42:23)",
+          "value": 5
+        },
+        "redlink_charge_time_102_119": {
+          "address": "0x911E",
+          "description": "Redlink charge time (1:42:24-1:59:27)",
+          "value": 1
+        },
+        "redlink_charge_time_119_136": {
+          "address": "0x9120",
+          "description": "Redlink charge time (1:59:28-2:16:31)",
+          "value": 1
+        },
+        "redlink_charge_time_136_153": {
+          "address": "0x9122",
+          "description": "Redlink charge time (2:16:32-2:33:35)",
+          "value": 0
+        },
+        "redlink_charge_time_153_170": {
+          "address": "0x9124",
+          "description": "Redlink charge time (2:33:36-2:50:39)",
+          "value": 0
+        },
+        "redlink_charge_time_170_187": {
+          "address": "0x9126",
+          "description": "Redlink charge time (2:50:40-3:07:43)",
+          "value": 0
+        },
+        "redlink_charge_time_187_204": {
+          "address": "0x9128",
+          "description": "Redlink charge time (3:07:44-3:24:47)",
+          "value": 0
+        },
+        "redlink_charge_time_204_221": {
+          "address": "0x912A",
+          "description": "Redlink charge time (3:24:48-3:41:51)",
+          "value": 0
+        },
+        "redlink_charge_time_221_238": {
+          "address": "0x912C",
+          "description": "Redlink charge time (3:41:52-3:58:55)",
+          "value": 0
+        }
+      },
+      "completed_charge": {
+        "address": "0x912E",
+        "description": "Completed charge (?)",
+        "value": 88
+      }
+    },
+    "discharges_events": {
+      "discharge": {
+        "discharge_to_empty": {
+          "address": "0x9030",
+          "description": "Discharge to empty",
+          "value": 0
+        },
+        "discharge_10_20a_seconds": {
+          "address": "0x903A",
+          "description": "Discharge @ 10-20A (seconds)",
+          "value": 4703
+        },
+        "discharge_20_30a": {
+          "address": "0x903C",
+          "description": "          @ 20-30A (could be watts)",
+          "value": 86
+        },
+        "discharge_30_40a": {
+          "address": "0x903E",
+          "description": "          @ 30-40A      ",
+          "value": 100
+        },
+        "discharge_40_50a": {
+          "address": "0x9040",
+          "description": "          @ 40-50A      ",
+          "value": 146
+        },
+        "discharge_50_60a": {
+          "address": "0x9042",
+          "description": "          @ 50-60A      ",
+          "value": 115
+        },
+        "discharge_60_70a": {
+          "address": "0x9044",
+          "description": "          @ 60-70A      ",
+          "value": 143
+        },
+        "discharge_70_80a": {
+          "address": "0x9046",
+          "description": "          @ 70-80A      ",
+          "value": 217
+        },
+        "discharge_80_90a": {
+          "address": "0x9048",
+          "description": "          @ 80-90A      ",
+          "value": 242
+        },
+        "discharge_90_100a": {
+          "address": "0x904A",
+          "description": "          @ 90-100A     ",
+          "value": 241
+        },
+        "discharge_100_110a": {
+          "address": "0x904C",
+          "description": "          @ 100-110A    ",
+          "value": 412
+        },
+        "discharge_110_120a": {
+          "address": "0x904E",
+          "description": "          @ 110-120A    ",
+          "value": 533
+        },
+        "discharge_120_130a": {
+          "address": "0x9050",
+          "description": "          @ 120-130A    ",
+          "value": 421
+        },
+        "discharge_130_140a": {
+          "address": "0x9052",
+          "description": "          @ 130-140A    ",
+          "value": 144
+        },
+        "discharge_140_150a": {
+          "address": "0x9054",
+          "description": "          @ 140-150A    ",
+          "value": 37
+        },
+        "discharge_150_160a": {
+          "address": "0x9056",
+          "description": "          @ 150-160A    ",
+          "value": 13
+        },
+        "discharge_160_170a": {
+          "address": "0x9058",
+          "description": "          @ 160-170A    ",
+          "value": 0
+        },
+        "discharge_170_180a": {
+          "address": "0x905A",
+          "description": "          @ 170-180A    ",
+          "value": 0
+        },
+        "discharge_180_190a": {
+          "address": "0x905C",
+          "description": "          @ 180-190A    ",
+          "value": 0
+        },
+        "discharge_190_200a": {
+          "address": "0x905E",
+          "description": "          @ 190-200A    ",
+          "value": 0
+        },
+        "discharge_200_210a": {
+          "address": "0x9060",
+          "description": "          @ 200-210A    ",
+          "value": 0
+        },
+        "discharge_10_15a_seconds": {
+          "address": "0x9064",
+          "description": "Discharge @ 10-15A (seconds)",
+          "value": 22
+        },
+        "discharge_15_20a": {
+          "address": "0x9066",
+          "description": "          @ 15-20A (could be watts)",
+          "value": 21
+        },
+        "discharge_20_25a": {
+          "address": "0x9068",
+          "description": "          @ 20-25A      ",
+          "value": 18
+        },
+        "discharge_25_30a": {
+          "address": "0x906A",
+          "description": "          @ 25-30A      ",
+          "value": 26
+        },
+        "discharge_30_35a": {
+          "address": "0x906C",
+          "description": "          @ 30-35A      ",
+          "value": 43
+        },
+        "discharge_35_40a": {
+          "address": "0x906E",
+          "description": "          @ 35-40A      ",
+          "value": 53
+        },
+        "discharge_40_45a": {
+          "address": "0x9070",
+          "description": "          @ 40-45A      ",
+          "value": 29
+        },
+        "discharge_45_50a": {
+          "address": "0x9072",
+          "description": "          @ 45-50A      ",
+          "value": 27
+        },
+        "discharge_50_55a": {
+          "address": "0x9074",
+          "description": "          @ 50-55A      ",
+          "value": 40
+        },
+        "discharge_55_60a": {
+          "address": "0x9076",
+          "description": "          @ 55-60A      ",
+          "value": 57
+        },
+        "discharge_60_65a": {
+          "address": "0x9078",
+          "description": "          @ 60-65A      ",
+          "value": 141
+        },
+        "discharge_65_70a": {
+          "address": "0x907A",
+          "description": "          @ 65-70A      ",
+          "value": 371
+        },
+        "discharge_70_75a": {
+          "address": "0x907C",
+          "description": "          @ 70-65A      ",
+          "value": 477
+        },
+        "discharge_75_80a": {
+          "address": "0x907E",
+          "description": "          @ 75-80A      ",
+          "value": 399
+        },
+        "discharge_80_85a": {
+          "address": "0x9080",
+          "description": "          @ 80-85A      ",
+          "value": 249
+        },
+        "discharge_85_90a": {
+          "address": "0x9082",
+          "description": "          @ 85-90A      ",
+          "value": 210
+        },
+        "discharge_90_95a": {
+          "address": "0x9084",
+          "description": "          @ 90-95A      ",
+          "value": 218
+        },
+        "discharge_95_100a": {
+          "address": "0x9086",
+          "description": "          @ 95-100A     ",
+          "value": 172
+        },
+        "discharge_100_105a": {
+          "address": "0x9088",
+          "description": "          @ 100-105A    ",
+          "value": 115
+        },
+        "discharge_105_110a": {
+          "address": "0x908A",
+          "description": "          @ 105-110A    ",
+          "value": 76
+        },
+        "discharge_110_115a": {
+          "address": "0x908C",
+          "description": "          @ 110-115A    ",
+          "value": 46
+        },
+        "discharge_115_120a": {
+          "address": "0x908E",
+          "description": "          @ 115-120A    ",
+          "value": 22
+        },
+        "discharge_120_125a": {
+          "address": "0x9090",
+          "description": "          @ 120-125A    ",
+          "value": 7
+        },
+        "discharge_125_130a": {
+          "address": "0x9092",
+          "description": "          @ 125-130A    ",
+          "value": 12
+        },
+        "discharge_130_135a": {
+          "address": "0x9094",
+          "description": "          @ 130-135A    ",
+          "value": 15
+        },
+        "discharge_135_140a": {
+          "address": "0x9096",
+          "description": "          @ 135-140A    ",
+          "value": 9
+        },
+        "discharge_140_145a": {
+          "address": "0x9098",
+          "description": "          @ 140-145A    ",
+          "value": 4
+        },
+        "discharge_145_150a": {
+          "address": "0x909A",
+          "description": "          @ 145-150A    ",
+          "value": 1
+        },
+        "discharge_150_155a": {
+          "address": "0x909C",
+          "description": "          @ 150-155A    ",
+          "value": 3
+        },
+        "discharge_155_160a": {
+          "address": "0x909E",
+          "description": "          @ 155-160A    ",
+          "value": 1
+        },
+        "discharge_160_165a": {
+          "address": "0x90A0",
+          "description": "          @ 160-165A    ",
+          "value": 1
+        },
+        "discharge_165_170a": {
+          "address": "0x90A2",
+          "description": "          @ 165-170A    ",
+          "value": 1
+        },
+        "discharge_170_175a": {
+          "address": "0x90A4",
+          "description": "          @ 170-175A    ",
+          "value": 1
+        },
+        "discharge_175_180a": {
+          "address": "0x90A6",
+          "description": "          @ 175-180A    ",
+          "value": 1
+        },
+        "discharge_180_185a": {
+          "address": "0x90A8",
+          "description": "          @ 180-185A    ",
+          "value": 3
+        },
+        "discharge_185_190a": {
+          "address": "0x90AA",
+          "description": "          @ 185-190A    ",
+          "value": 0
+        },
+        "discharge_190_195a": {
+          "address": "0x90AC",
+          "description": "          @ 190-195A    ",
+          "value": 1
+        },
+        "discharge_195_200a": {
+          "address": "0x90AE",
+          "description": "          @ 195-200A    ",
+          "value": 0
+        },
+        "discharge_200a_plus": {
+          "address": "0x90B0",
+          "description": "          @ 200A+       ",
+          "value": 0
+        }
+      }
+    },
+    "battery_events": {
+      "overheat_on_tool_count": {
+        "address": "0x9032",
+        "description": "Num. overheat on tool (must be > 10A)",
+        "value": 3
+      },
+      "overcurrent_count": {
+        "address": "0x9034",
+        "description": "Overcurrent?",
+        "value": 0
+      },
+      "low_voltage_events": {
+        "address": "0x9036",
+        "description": "Low voltage events)",
+        "value": 0
+      },
+      "low_voltage_bounce": {
+        "address": "0x9038",
+        "description": "Low-voltage bounce? (4 flashing LEDs)",
+        "value": 0
+      }
+    }
+  }
+}
