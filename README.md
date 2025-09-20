@@ -33,6 +33,10 @@ pip install -r requirements.txt
 Once the required packages are installed, run the following command. If the serial port is known, specify it using `--port` to speed things up.
 
 ```bash
+python web_service.py
+```
+
+```bash
 python3 m18.py
 ```
 or on Windows
@@ -72,4 +76,5 @@ You should see:
 I get:
 * m.idle(): J2=0.13V, J1=0.81V
 * m.high(): J2=8.8V, J1=3.3V
+
 
