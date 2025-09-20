@@ -24,10 +24,6 @@ To use this software, Python is required. Please read the [python](https://docs.
 
 Install the required packages by running
 
-```bash
-pip install -r requirements.txt
-```
-
 ## Usage
 
 Once the required packages are installed, run the following command. If the serial port is known, specify it using `--port` to speed things up.
@@ -42,6 +38,10 @@ python3 m18.py
 or on Windows
 ```bash
 python.exe m18.py
+```
+
+```bash
+pip install -r requirements.txt
 ```
 
 
@@ -76,5 +76,6 @@ You should see:
 I get:
 * m.idle(): J2=0.13V, J1=0.81V
 * m.high(): J2=8.8V, J1=3.3V
+
 
 
