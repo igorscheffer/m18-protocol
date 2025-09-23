@@ -47,10 +47,8 @@
         let percentages = [];
         let colors = [];
 
-        // Calcula o tempo total
         let totalTime = Object.values(discharges_time).reduce((sum, block) => sum + block.time, 0);
 
-        // Função para converter segundos em hh:mm:ss
         function formatTime(sec) {
             let h = Math.floor(sec / 3600);
             let m = Math.floor((sec % 3600) / 60);
@@ -58,19 +56,14 @@
             return `${h}:${m}:${s}`;
         }
 
-        // Função para gerar cor de verde a vermelho
         function getColor(blockName) {
-            // Pega a faixa inicial (10-20A -> 10)
             let start = parseInt(blockName.split('-')[0]);
-            // Limita para 0-200A
             let ratio = Math.min(start / 200, 1);
-            // Converte para cor
             let r = Math.floor(255 * ratio);
             let g = Math.floor(255 * (1 - ratio));
             return `rgba(${r},${g},0,0.7)`;
         }
 
-        // Prepara os arrays para o gráfico
         for (let block in discharges_time) {
             labels.push(block);
             times.push(discharges_time[block].time);
@@ -79,6 +72,10 @@
         }
 
         const ctx = document.getElementById(canvasId).getContext('2d');
+
+        if (Chart.getChart(canvasId)) {
+            Chart.getChart(canvasId).destroy();
+        }
 
         return new Chart(ctx, {
             type: 'bar',
@@ -143,6 +140,7 @@
         }
 
     $(document).ready(function() {
+        let pageLoader = $("#page-loader");
         $('.main.menu').visibility({ type: 'fixed' });
         $('.overlay').visibility({ type: 'fixed', offset: 80 });
         $('.image').visibility({
@@ -166,10 +164,13 @@
                 let d_battery_info = $("#battery_info");
                 let d_battery_chargin = $("#battery_charging");
 
+                d_battery_info.html("");
+                d_battery_chargin.html("");
+
                 let l_cell_voltages = [];
-                let cell_imbalance = 0;
                 let pack_voltage = 0;
                 let cells = data.battery_voltages.cell_voltages_mv.value;
+                let voltages = Object.values(cells);
 
                 for (let cell in cells) {
                     if (cells.hasOwnProperty(cell)) {
@@ -177,12 +178,10 @@
                         
                         l_cell_voltages.push(`<div><span style="color: #777; margin-right: 1em;">Cell ${cell_number}</span> ${cells[cell]} mV</div>`);
                         pack_voltage+=cells[cell];
-
-                        if(cells[cell] > cell_imbalance){
-                            cell_imbalance = cells[cell];
-                        }
                     }
                 }
+
+                let cell_imbalance = voltages.length ? Math.max(...voltages) - Math.min(...voltages) : null;
 
                 let discharges = data.discharges_events.discharge;
                 let discharges_time = {};
@@ -286,6 +285,8 @@
                         </div>
                     </div>
                 `);
+
+                $(".dimmer").removeClass("active");
             });
         }
     
@@ -301,6 +302,7 @@
             }
 
             button.addClass("loading disabled");
+            pageLoader.addClass("active");
             
             $.post("/api/read_battery?port="+serial_port, { port: serial_port }, function(response) {
                 getBatteryData();
@@ -382,6 +384,10 @@
     </div>
 
     <div class="ui container">
+        <div id="page-loader" class="ui inverted dimmer">
+            <div class="ui text loader">Loading</div>
+        </div>
+        
         <div class='ui header large'>Battery Info</div>
         <div id="battery_info" class="ui internally grid"></div>
 
